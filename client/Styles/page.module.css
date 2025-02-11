@@ -1,0 +1,115 @@
+/* Retro Font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Font Styles */
+.fontArcade {
+  font-family: 'Press Start 2P', cursive;
+}
+
+/* Neon Colors */
+.textNeonPink {
+  color: #ff00ff;
+}
+
+.textNeonBlue {
+  color: #00ffff;
+}
+
+.textNeonGreen {
+  color: #00ff00;
+}
+
+.borderNeonPink {
+  border-color: #ff00ff;
+}
+
+.shadowNeon {
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
+}
+
+.shadowNeonLg {
+  box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff;
+}
+
+/* Animations */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff;
+  }
+  50% {
+    box-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ff00ff;
+  }
+}
+
+.animateGlow {
+  animation: glow 2s infinite;
+}
+
+.glowText {
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+}
+
+/* Form Styles */
+.formContainer {
+  position: relative;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 4px solid #ff00ff;
+}
+
+.formLabel {
+  color: #00ff00;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.5rem;
+  background: transparent;
+  border: 2px solid #00ffff;
+  color: #00ff00;
+  border-radius: 0.25rem;
+  outline: none;
+}
+
+.formInput:focus {
+  box-shadow: 0 0 5px #ff00ff;
+}
+
+.formButton {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(to right, #ff00ff, #00ffff);
+  color: black;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.formButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+}
+/* Add to your existing styles in page.module.css */
+
+/* Arcade style font for X and O */
+.arcadeFont {
+  font-family: 'Press Start 2P', cursive; /* Use a pixelated arcade font */
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Red X */
+.text-red-500 {
+  color: #e60000; /* Arcade Red */
+  text-shadow: 0 0 5px #e60000, 0 0 10px #e60000, 0 0 15px #e60000; /* Neon effect */
+}
+
+/* Green O */
+.text-green-500 {
+  color: #00e600; /* Arcade Green */
+  text-shadow: 0 0 5px #00e600, 0 0 10px #00e600, 0 0 15px #00e600; /* Neon effect */
+}

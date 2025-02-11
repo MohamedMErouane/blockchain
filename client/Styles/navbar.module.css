@@ -1,0 +1,98 @@
+/* Navbar Container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #222, #333);
+    border-bottom: 4px solid #ff00ff;
+    position: static;
+    top: 0;
+    width: 100%;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Left Section: Logo */
+  .logo {
+    font-size: 1.5rem;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+  }
+  
+  /* Right Section: Profile and Coins */
+  .rightSection {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Adjust spacing between profile and coin */
+  }
+  
+  /* Profile */
+  .profile {
+    position: relative;
+  }
+  
+  .profileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .profileImage:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+  }
+  
+  /* User Info Popup */
+  .userInfo {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: #222;
+    color: white;
+    border: 2px solid #ff00ff;
+    border-radius: 5px;
+    padding: 10px;
+    width: 200px;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+    z-index: 1001;
+  }
+  
+  .userInfo p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #00ff00;
+  }
+  
+  /* Coins */
+  .coins {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .coinIcon {
+    width: 24px;
+    height: 24px;
+    animation: spin 2s linear infinite;
+  }
+  
+  .coinCount {
+    font-size: 1.2rem;
+    color: #ffff00;
+    text-shadow: 0 0 5px #ffff00, 0 0 10px #ffff00;
+  }
+  
+  /* Animations */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

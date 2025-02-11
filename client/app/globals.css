@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+.arcadeFont {
+  font-family: 'Press Start 2P', cursive; /* Arcade font */
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Red X with neon effect */
+.text-red-500 {
+  color: #e60000; /* Arcade Red */
+  text-shadow: 0 0 5px #e60000, 0 0 10px #e60000, 0 0 15px #e60000; /* Neon effect */
+}
+
+/* Green O with neon effect */
+.text-green-500 {
+  color: #00e600; /* Arcade Green */
+  text-shadow: 0 0 5px #00e600, 0 0 10px #00e600, 0 0 15px #00e600; /* Neon effect */
+}
