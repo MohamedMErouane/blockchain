@@ -5,7 +5,7 @@ module game::game {
     const E_INSUFFICIENT_PAYMENT: u64 = 1;
 
     // Define the constant for the owner address
-    const OWNER_ADDRESS: address = @0x5f5deee9b5f18c1b1c9faa5c0fdb25128e46eacf3665eaa65dde9a7d6d0d3554;
+    const OWNER_ADDRESS: address = @0xd4d8d3613eab1cb48434c48f08f87345d5b4268489538f7095b140dcb3d968a4;
 
     // Define the Game struct
     public struct Game has key, store {
