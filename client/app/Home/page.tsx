@@ -7,7 +7,7 @@ import GameCard from "../../components/gamecard";
 import { createNetworkConfig, SuiClientProvider, WalletProvider } from "@mysten/dapp-kit";
 import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import { initiatePayment } from '../services/blockchain';
 // Initialize React Query Client
 const queryClient = new QueryClient();
 
@@ -24,7 +24,7 @@ const games = [
 
 // Set up network configuration
 const { networkConfig } = createNetworkConfig({
-  localnet: { url: getFullnodeUrl("localnet") },
+  testnet: { url: getFullnodeUrl("testnet") }, 
   mainnet: { url: getFullnodeUrl("mainnet") },
 });
 
@@ -38,7 +38,7 @@ const Home: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networkConfig} defaultNetwork="localnet">
+      <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
         {/* WalletProvider should wrap the whole component tree */}
         <WalletProvider>
           <div className="min-h-screen bg-gradient-to-br from-gray-800 to-black text-white">

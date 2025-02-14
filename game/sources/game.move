@@ -52,12 +52,15 @@ module game::game {
 
     // Wrapper function for handling transactions
     public fun handle_transaction(
-        _player: address,  // Prefixed with _ to avoid unused variable warning
-        amount: u64,
-        game: &mut Game,
-        coin: &mut Coin<u64>,
-        ctx: &mut TxContext
-    ) {
-        process_transaction(_player, amount, game, coin, ctx);
-    }
+    _player: address,  
+    amount: u64,
+    game: &mut Game,
+    coin: &mut Coin<u64>,
+    ctx: &mut TxContext
+) {
+    std::debug::print("Processing transaction...");
+    process_transaction(_player, amount, game, coin, ctx);
+    std::debug::print("Transaction processed.");
+}
+
 }

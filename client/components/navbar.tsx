@@ -195,4 +195,3 @@ export default Navbar;
 function signAndExecuteTransactionBlock(arg0: { transactionBlock: TransactionBlock; requestType: string; }) {
   throw new Error("Function not implemented.");
 }
-
