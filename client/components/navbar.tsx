@@ -70,59 +70,6 @@ const Navbar: React.FC<NavbarProps> = ({ setWalletAddress }) => {
       clearTimeout(maxWaitTime); // Clear the timeout
     };
   }, [isSuiAvailable]);
-
-
-
-  
-
-  // useEffect(() => {
-  //   if (isSuiAvailable) {
-  //     // Once Sui is available, check for the connected network
-  //     window.sui.getNetwork()
-  //       .then((network: string) => {
-  //         setNetwork(network);
-  //         console.log("Network:", network);
-  //       })
-  //       .catch((error: any) => {
-  //         console.error("Error getting network:", error);
-  //         setNetwork("unknown");
-  //       });
-  //   }
-  // }, [isSuiAvailable]);
-
-  
-
-  // const handlePayment = async () => {
-  //   if (connectionStatus != 'connected') {
-  //     alert("Please connect your wallet first!");
-  //     return console.log(connectionStatus);
-  //   }
-  
-  //   try {
-  //     const tx = new TransactionBlock();
-  //     tx.moveCall({
-  //       target: `${CONTRACT_ADDRESS}::game::handle_transaction`,
-  //       arguments: [tx.pure(ENTRY_FEE)],
-  //     });
-  
-  //     // Assuming `useCurrentWallet` provides the correct signing function  
-  //     const response = await signAndExecuteTransactionBlock({
-  //       transactionBlock: tx,
-  //       requestType: "WaitForEffectsCert",
-  //     })as any;
-  
-  //     if (response?.effects?.status?.status === "success") {
-  //       alert("Payment successful!");
-  //     } else {
-  //       alert("Transaction failed!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Payment failed:", error);
-  //     alert("Payment error: " + error);
-      
-  //   }
-  // };
-  
   useEffect(() => {
     if (!currentWallet) {
       console.log('No wallet connected');
@@ -167,6 +114,7 @@ const Navbar: React.FC<NavbarProps> = ({ setWalletAddress }) => {
                 onSuccess: (result) => {
                   console.log('executed transaction', result);
                   setDigest(result.digest);
+                  alert("Payement with succes thank you enjoy your game")
                 },
               },
             );
