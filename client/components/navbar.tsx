@@ -46,30 +46,30 @@ const Navbar: React.FC<NavbarProps> = ({ setWalletAddress }) => {
   const CONTRACT_ADDRESS = " 83JG2CVUwn2v4sfkbKEvwrBiSyACLjagDkqhjQJ4iXfH";
   const ENTRY_FEE = 1000000;
 
-  useEffect(() => {
-    // Check if window.sui is available every 100ms (with a max wait time)
-    const checkSuiAvailability = setInterval(() => {
-      if (typeof window !== "undefined" && window.sui) {
-        setIsSuiAvailable(true); // Set Sui availability to true
-        clearInterval(checkSuiAvailability); // Stop checking
-      }
-    }, 100);
+  // useEffect(() => {
+  //   // Check if window.sui is available every 100ms (with a max wait time)
+  //   const checkSuiAvailability = setInterval(() => {
+  //     if (typeof window !== "undefined" && window.sui) {
+  //       setIsSuiAvailable(true); // Set Sui availability to true
+  //       clearInterval(checkSuiAvailability); // Stop checking
+  //     }
+  //   }, 100);
 
-    // Set a maximum wait time of 5 seconds to stop checking
-    const maxWaitTime = setTimeout(() => {
-      if (!isSuiAvailable) {
-        console.log(wallets)
-        console.log(useCurrentWallet)
-        console.error("Sui Wallet is not available. Please install the extension.");
-        alert("Sui Wallet is not installed. Please install the Sui Wallet extension.");
-      }
-    }, 10000);
+  //   // Set a maximum wait time of 5 seconds to stop checking
+  //   const maxWaitTime = setTimeout(() => {
+  //     if (!isSuiAvailable) {
+  //       console.log(wallets)
+  //       console.log(useCurrentWallet)
+  //       console.error("Sui Wallet is not available. Please install the extension.");
+  //       alert("Sui Wallet is not installed. Please install the Sui Wallet extension.");
+  //     }
+  //   }, 10000);
 
-    return () => {
-      clearInterval(checkSuiAvailability); // Clear the interval when the component unmounts
-      clearTimeout(maxWaitTime); // Clear the timeout
-    };
-  }, [isSuiAvailable]);
+  //   return () => {
+  //     clearInterval(checkSuiAvailability); // Clear the interval when the component unmounts
+  //     clearTimeout(maxWaitTime); // Clear the timeout
+  //   };
+  // }, [isSuiAvailable]);
   useEffect(() => {
     if (!currentWallet) {
       console.log('No wallet connected');
