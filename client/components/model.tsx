@@ -40,9 +40,9 @@ const ThreeScene: React.FC = () => {
     // Load 3D Models
     const loader = new GLTFLoader();
     const modelUrls = [
-      "/arcades.glb", // Replace with your model paths
-      "/arcades2.glb",
-      "/arcades.glb",
+      "/suiman.glb", // Replace with your model paths
+      "/spaceinvaders.glb",
+      "/arcades3.glb",
     ];
 
     // Load and position multiple models
@@ -125,8 +125,10 @@ const ThreeScene: React.FC = () => {
       // Set scale for center model (larger) and others (smaller)
       if (currentMachines.indexOf(index) === 1) {
         gsap.to(machine.scale, { x: 80, y: 80, z: 80, duration: 0.5 }); // Center model (larger)
+        controlsRef.current.enabled = true; // Enable controls for the center model
       } else {
         gsap.to(machine.scale, { x: 40, y: 40, z: 40, duration: 0.5 }); // Other models (smaller)
+        controlsRef.current.enabled = false; // Disable controls for the other models
       }
     });
   }, [currentMachines]);
