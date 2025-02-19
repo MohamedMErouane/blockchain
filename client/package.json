@@ -23,6 +23,7 @@
     "client": "file:",
     "dotconfig": "^0.0.1-security",
     "dotenv": "^16.4.7",
+    "gsap": "^3.12.7",
     "ls": "^0.2.1",
     "next": "15.1.4",
     "next-auth": "^4.24.11",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/gsap": "^1.20.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

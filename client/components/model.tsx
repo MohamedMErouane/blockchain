@@ -1,26 +1,33 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { gsap } from "gsap"; // For smooth animations
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"; // Import OrbitControls
 
 const ThreeScene: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [currentMachines, setCurrentMachines] = useState([0, 1, 2]); // Indices for the 3 machines
+  const machinesRef = useRef<THREE.Object3D[]>([]); // Ref to store the machines
+
+  // Declare the camera with useRef
+  const camera = useRef<THREE.PerspectiveCamera | null>(null);
+  const controlsRef = useRef<any>(null); // Ref to store the OrbitControls instance
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     // Scene Setup
     const scene = new THREE.Scene();
-    scene.background = null; // No background in Three.js (we'll use CSS for the gradient)
+    scene.background = null;
 
     // Camera Setup
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-    camera.position.set(0, 50, 200); // Move camera closer
+    camera.current = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+    if (camera.current) camera.current.position.set(0, 50, 200);
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // Enable transparency
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
 
@@ -30,39 +37,51 @@ const ThreeScene: React.FC = () => {
     scene.add(topLight);
     scene.add(new THREE.AmbientLight(0xaaaaaa, 1));
 
-    // Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-
-    // Load 3D Model
+    // Load 3D Models
     const loader = new GLTFLoader();
-    let object: THREE.Object3D | null = null;
-
-    loader.load(
+    const modelUrls = [
+      "/arcades.glb", // Replace with your model paths
+      "/arcades2.glb",
       "/arcades.glb",
-      (gltf) => {
-        object = gltf.scene;
-        object.scale.set(80, 80, 80); // Bigger model
-        object.position.set(0, -50, 0); // Centered position
-        scene.add(object);
-      },
-      undefined,
-      (error) => console.error("Error loading model:", error)
-    );
+    ];
+
+    // Load and position multiple models
+    modelUrls.forEach((url, index) => {
+      loader.load(
+        url,
+        (gltf) => {
+          const machine = gltf.scene;
+          machine.scale.set(40, 40, 40); // Set the same scale for all models initially
+          machine.position.set(index * 150 - 150, -50, 0); // Position models horizontally
+          scene.add(machine);
+          machinesRef.current.push(machine); // Store machine in ref
+        },
+        undefined,
+        (error) => console.error("Error loading model:", error)
+      );
+    });
+
+    // Initialize OrbitControls
+    controlsRef.current = new OrbitControls(camera.current, renderer.domElement);
+    controlsRef.current.enableDamping = true;
+    controlsRef.current.enabled = false; // Disable orbit controls initially for all models
 
     // Animation Loop
     const animate = () => {
       requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
+      if (controlsRef.current) controlsRef.current.update();
+      if (camera.current) {
+        renderer.render(scene, camera.current);
+      }
     };
-
     animate();
 
     // Resize Handling
     const onResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+      if (camera.current) {
+        camera.current.aspect = window.innerWidth / window.innerHeight;
+        camera.current.updateProjectionMatrix();
+      }
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener("resize", onResize);
@@ -74,12 +93,58 @@ const ThreeScene: React.FC = () => {
     };
   }, []);
 
+  // Function to switch machine positions
+  const switchMachine = (direction: "left" | "right") => {
+    // Update the state to reflect the new machine order
+    setCurrentMachines((prevMachines) => {
+      const newMachines = [...prevMachines];
+      if (direction === "left") {
+        // Swap machine 1 and 2
+        const temp = newMachines[0];
+        newMachines[0] = newMachines[1];
+        newMachines[1] = temp;
+      } else {
+        // Swap machine 2 and 3
+        const temp = newMachines[1];
+        newMachines[1] = newMachines[2];
+        newMachines[2] = temp;
+      }
+      return newMachines;
+    });
+  };
+
+  // UseEffect to position machines based on currentMachines state
+  useEffect(() => {
+    if (machinesRef.current.length === 0) return;
+
+    // Reset all machine positions
+    machinesRef.current.forEach((machine, index) => {
+      const newPosX = (currentMachines.indexOf(index) - 1) * 150;
+      gsap.to(machine.position, { x: newPosX, duration: 0.5, ease: "power2.inOut" });
+      
+      // Set scale for center model (larger) and others (smaller)
+      if (currentMachines.indexOf(index) === 1) {
+        gsap.to(machine.scale, { x: 80, y: 80, z: 80, duration: 0.5 }); // Center model (larger)
+      } else {
+        gsap.to(machine.scale, { x: 40, y: 40, z: 40, duration: 0.5 }); // Other models (smaller)
+      }
+    });
+  }, [currentMachines]);
+
+  useEffect(() => {
+    // Ensure the initial center model is large when the website first loads
+    if (machinesRef.current.length > 0) {
+      const centerMachine = machinesRef.current[1]; // The second model is the center one
+      gsap.to(centerMachine.scale, { x: 80, y: 80, z: 80, duration: 0.5 }); // Center model is large initially
+    }
+  }, []);
+
   return (
     <div
       style={{
         width: "100vw",
         height: "100vh",
-        background: "linear-gradient(to bottom right, #1f2937, #000000)", // Tailwind's gray-800 to black
+        background: "linear-gradient(to bottom right, #1f2937, #000000)",
       }}
     >
       <div
@@ -92,6 +157,38 @@ const ThreeScene: React.FC = () => {
           left: 0,
         }}
       />
+      {/* Left Arrow Button */}
+      <div
+        onClick={() => switchMachine("left")}
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "10px",
+          transform: "translateY(-50%)",
+          cursor: "pointer",
+          zIndex: 10,
+          color: "#fff",
+          fontSize: "2rem",
+        }}
+      >
+        {"<"}
+      </div>
+      {/* Right Arrow Button */}
+      <div
+        onClick={() => switchMachine("right")}
+        style={{
+          position: "absolute",
+          top: "50%",
+          right: "10px",
+          transform: "translateY(-50%)",
+          cursor: "pointer",
+          zIndex: 10,
+          color: "#fff",
+          fontSize: "2rem",
+        }}
+      >
+        {">"}
+      </div>
     </div>
   );
 };
