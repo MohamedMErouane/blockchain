@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/public/room.glb
 /.pnp
 .pnp.*
 .yarn/*
@@ -23,7 +24,7 @@
 # misc
 .DS_Store
 *.pem
-client/public/room.glb
+
 
 # debug
 npm-debug.log*
