@@ -1,8 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/client/node_modules
-/client/public/room.glb
+node_modules
+public/room.glb
+client/public/room.glb
+/home/med/blockchain/client/public/room.glb
 /.pnp
 .pnp.*
 .yarn/*

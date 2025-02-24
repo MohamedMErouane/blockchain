@@ -548,6 +548,9 @@ video {
 .absolute {
   position: absolute;
 }
+.relative {
+  position: relative;
+}
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;

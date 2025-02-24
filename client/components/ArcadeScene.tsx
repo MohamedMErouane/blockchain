@@ -17,6 +17,12 @@ export default function ArcadeScene() {
       {/* 3D Model of the Room */}
       <primitive object={roomModel.scene} position={[0, 0, 0]} scale={[1, 1, 1]} />
 
+      {/* Example: Table object */}
+      <mesh position={[2, 0.5, -3]}>
+        <boxGeometry args={[2, 1, 2]} />
+        <meshStandardMaterial color="brown" />
+      </mesh>
+
       {/* Lights */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 5, 5]} castShadow />
