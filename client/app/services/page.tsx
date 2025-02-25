@@ -3,19 +3,32 @@ import { Canvas } from "@react-three/fiber";
 import { PointerLockControls } from "@react-three/drei";
 import { Suspense, useState, useEffect } from "react";
 import ArcadeScene from "@/components/ArcadeScene";
-import Player from "@/components/player"; // Import the player component
+import Player from "@/components/player";
 import dynamic from "next/dynamic";
 
-// Dynamically import the Joystick component to avoid SSR issues
+// Dynamically import the Joystick component (for mobile devices)
 const Joystick = dynamic(() => import("react-joystick-component").then((mod) => mod.Joystick), {
   ssr: false,
 });
 
 export default function Home() {
+  // State for pointer lock controls
   const [isLocked, setIsLocked] = useState(false);
+
+  // State to detect if the user is on a mobile device
   const [isMobile, setIsMobile] = useState(false);
-  const [move, setMove] = useState({ forward: 0, backward: 0, left: 0, right: 0 }); // Movement state
-  const [rotation, setRotation] = useState({ x: 0, y: 0 }); // Rotation state
+
+  // State for player movement (forward, backward, left, right)
+  const [move, setMove] = useState({ forward: 0, backward: 0, left: 0, right: 0 });
+
+  // State for player rotation (x, y)
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+
+  // State to track if the player is near an arcade machine
+  const [nearArcade, setNearArcade] = useState(false);
+
+  // State to track which arcade machine the player is near
+  const [nearArcadeIndex, setNearArcadeIndex] = useState<number | null>(null);
 
   // Detect if the user is on a mobile device
   useEffect(() => {
@@ -34,18 +47,17 @@ export default function Home() {
     };
   }, []);
 
-  // Activate PointerLockControls on user click (desktop only)
+  // Handle pointer lock controls on user click (desktop only)
   const handleClick = () => {
     if (!isMobile) {
       setIsLocked(true);
     }
   };
 
-  // Joystick movement handler (left joystick)
+  // Handle joystick movement (left joystick for movement)
   const handleMoveJoystick = (event: { x: number | null; y: number | null }) => {
     if (!event || event.x === null || event.y === null) return;
 
-    // Update player movement based on joystick input
     setMove({
       forward: event.y > 0 ? Math.abs(event.y) : 0,
       backward: event.y < 0 ? Math.abs(event.y) : 0,
@@ -59,11 +71,10 @@ export default function Home() {
     setMove({ forward: 0, backward: 0, left: 0, right: 0 });
   };
 
-  // Joystick rotation handler (right joystick)
+  // Handle joystick rotation (right joystick for rotation)
   const handleRotateJoystick = (event: { x: number | null; y: number | null }) => {
     if (!event || event.x === null || event.y === null) return;
 
-    // Update rotation based on joystick input
     setRotation({
       x: event.x, // Horizontal rotation (left/right)
       y: event.y, // Vertical rotation (up/down)
@@ -75,7 +86,7 @@ export default function Home() {
     setRotation({ x: 0, y: 0 });
   };
 
-  // Keyboard controls (for desktop)
+  // Handle keyboard controls (for desktop)
   useEffect(() => {
     if (isMobile) return; // Skip keyboard controls on mobile
 
@@ -122,17 +133,56 @@ export default function Home() {
     };
   }, [isMobile]);
 
+  // Handle "Press F to play" interaction
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "KeyF" && nearArcade && nearArcadeIndex !== null) {
+        console.log(`Playing Arcade ${nearArcadeIndex + 1}`);
+        // Add your logic here to start the arcade game
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [nearArcade, nearArcadeIndex]);
+
   return (
     <div className="h-screen w-screen" onClick={handleClick}>
+      {/* Canvas for 3D scene */}
       <Canvas shadows camera={{ position: [0, 1.6, 0], fov: 75 }}>
         <Suspense fallback={null}>
           <ArcadeScene />
-          <Player move={move} rotation={rotation} /> {/* Pass move and rotation states to Player */}
+          <Player
+            move={move}
+            rotation={rotation}
+            setNearArcade={setNearArcade}
+            setNearArcadeIndex={setNearArcadeIndex}
+          />
         </Suspense>
-        {!isMobile && isLocked && <PointerLockControls />} {/* Enable PointerLockControls only on desktop */}
+        {!isMobile && isLocked && <PointerLockControls />}
       </Canvas>
 
-      {/* Joysticks for mobile devices (outside Canvas) */}
+      {/* Display "Press F to play" message when near an arcade machine */}
+      {nearArcade && nearArcadeIndex !== null && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            color: "white",
+            fontSize: "24px",
+            zIndex: 1000,
+          }}
+        >
+          Press F to play Arcade {nearArcadeIndex + 1}
+        </div>
+      )}
+
+      {/* Joysticks for mobile devices */}
       {isMobile && (
         <>
           {/* Left joystick for movement */}
@@ -146,8 +196,8 @@ export default function Home() {
           >
             <Joystick
               size={100}
-              baseColor="rgba(255, 255, 255, 0.3)" // Transparent base
-              stickColor="rgba(0, 0, 0, 0.5)" // Semi-transparent stick
+              baseColor="rgba(255, 255, 255, 0.3)"
+              stickColor="rgba(0, 0, 0, 0.5)"
               move={handleMoveJoystick}
               stop={handleMoveJoystickStop}
             />
@@ -164,8 +214,8 @@ export default function Home() {
           >
             <Joystick
               size={100}
-              baseColor="rgba(255, 255, 255, 0.3)" // Transparent base
-              stickColor="rgba(0, 0, 0, 0.5)" // Semi-transparent stick
+              baseColor="rgba(255, 255, 255, 0.3)"
+              stickColor="rgba(0, 0, 0, 0.5)"
               move={handleRotateJoystick}
               stop={handleRotateJoystickStop}
             />

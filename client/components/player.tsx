@@ -1,13 +1,15 @@
+// player.tsx
 "use client";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Vector3, Box3, Raycaster, Mesh } from "three";
+import { arcadePositions } from "../components/arcadeposition"; // Adjust the path accordingly
 
-const SPEED = 0.03; // Reduced speed for slower movement
-const ROTATION_SPEED = 0.02; // Speed for camera rotation
-const ROOM_BOUNDS = new Box3(new Vector3(-10, 0, -10), new Vector3(10, 5, 10)); // Define room bounds
+const SPEED = 0.03; // Movement speed
+const ROTATION_SPEED = 0.02; // Rotation speed
+const ROOM_BOUNDS = new Box3(new Vector3(-10, 0, -10), new Vector3(10, 5, 10)); // Room bounds
+const ARCADE_RANGE = 2; // Range within which the player is considered near an arcade machine
 
-// Define the type for the move prop
 interface MoveState {
   forward: number;
   backward: number;
@@ -15,13 +17,19 @@ interface MoveState {
   right: number;
 }
 
-// Define the type for the rotation prop
 interface RotationState {
   x: number;
   y: number;
 }
 
-export default function Player({ move, rotation }: { move: MoveState; rotation: RotationState }) {
+interface PlayerProps {
+  move: MoveState;
+  rotation: RotationState;
+  setNearArcade: (near: boolean) => void; // Callback to update nearArcade state
+  setNearArcadeIndex: (index: number | null) => void; // Callback to update which arcade is nearby
+}
+
+export default function Player({ move, rotation, setNearArcade, setNearArcadeIndex }: PlayerProps) {
   const playerRef = useRef<Mesh | null>(null);
   const { camera, scene } = useThree();
   const raycaster = new Raycaster();
@@ -32,7 +40,7 @@ export default function Player({ move, rotation }: { move: MoveState; rotation: 
 
     // Check room bounds
     if (!ROOM_BOUNDS.containsPoint(newPosition)) {
-      return false; // Collision with room bounds
+      return false;
     }
 
     // Check for collisions with objects in the scene
@@ -40,18 +48,18 @@ export default function Player({ move, rotation }: { move: MoveState; rotation: 
     const intersects = raycaster.intersectObjects(scene.children, true);
 
     if (intersects.length > 0 && intersects[0].distance < 1) {
-      return false; // Collision with an object
+      return false;
     }
 
-    return true; // No collision
+    return true;
   };
 
-  // Update player position and rotation based on movement
+  // Update player position and rotation
   useFrame(() => {
     if (playerRef.current) {
       const direction = new Vector3();
 
-      // Always move forward relative to the camera's direction when pressing "W"
+      // Movement logic
       if (move.forward) {
         direction.add(camera.getWorldDirection(new Vector3()).setY(0).normalize());
       }
@@ -73,18 +81,30 @@ export default function Player({ move, rotation }: { move: MoveState; rotation: 
         playerRef.current.position.copy(newPosition);
       }
 
-      // Update the camera position to follow the player
+      // Update camera position to follow the player
       camera.position.copy(playerRef.current.position);
 
-      // Rotate the camera based on the rotation joystick input
-      camera.rotation.y -= rotation.x * ROTATION_SPEED; // Horizontal rotation (left/right)
-      camera.rotation.x -= rotation.y * ROTATION_SPEED; // Vertical rotation (up/down)
+      // Rotate the camera based on joystick input
+      camera.rotation.y -= rotation.x * ROTATION_SPEED;
+      camera.rotation.x -= rotation.y * ROTATION_SPEED;
+
+      // Check proximity to ALL arcade machines
+      let nearbyArcadeIndex = null;
+      for (let i = 0; i < arcadePositions.length; i++) {
+        if (playerRef.current.position.distanceTo(arcadePositions[i]) < ARCADE_RANGE) {
+          nearbyArcadeIndex = i; // Store the index of the nearby arcade
+          break;
+        }
+      }
+
+      // Update states
+      setNearArcadeIndex(nearbyArcadeIndex); // Which arcade is nearby
+      setNearArcade(nearbyArcadeIndex !== null); // Whether any arcade is nearby
     }
   });
 
   return (
     <>
-      {/* Player representation (optional) */}
       <mesh ref={playerRef} position={[0, 1, 0]}>
         <boxGeometry args={[0.5, 2, 0.5]} />
         <meshStandardMaterial color="green" />
