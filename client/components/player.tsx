@@ -107,8 +107,8 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
 
   return (
     <>
-      <mesh ref={playerRef} position={[0, 1, 0]}>
-        <boxGeometry args={[0.5, 2, 0.5]} />
+      <mesh ref={playerRef} position={[2, 1.3, 3]}>
+        <boxGeometry args={[0.5, 1.5, 0.5]} />
         <meshStandardMaterial color="green" />
       </mesh>
     </>

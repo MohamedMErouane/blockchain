@@ -1,18 +1,17 @@
 "use client";
 import { useLoader } from "@react-three/fiber";
-import { Plane } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export default function ArcadeScene() {
-  // Load the 3D room model from the public folder
   const roomModel = useLoader(GLTFLoader, "/room.glb");
 
   return (
     <>
       {/* Floor */}
-      <Plane args={[50, 50]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <meshStandardMaterial attach="material" color="gray" />
-      </Plane>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[50, 50]} />
+        <meshStandardMaterial color="gray" />
+      </mesh>
 
       {/* 3D Model of the Room */}
       <primitive object={roomModel.scene} position={[0, 0, 0]} scale={[1, 1, 1]} />

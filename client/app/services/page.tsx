@@ -168,7 +168,7 @@ export default function Home() {
             setNearArcadeIndex={setNearArcadeIndex}
           />
         </Suspense>
-        {!isMobile && isLocked && <PointerLockControls />}
+        {!isMobile && isLocked && <PointerLockControls key={undefined} camera={undefined} layers={undefined} quaternion={undefined} position={undefined} children={undefined} isLocked={undefined} rotation={undefined} onClick={undefined} onPointerMissed={undefined} onContextMenu={undefined} onDoubleClick={undefined} onPointerUp={undefined} onPointerDown={undefined} onPointerOver={undefined} onPointerOut={undefined} onPointerEnter={undefined} onPointerLeave={undefined} onPointerMove={undefined} onPointerCancel={undefined} onWheel={undefined} onLostPointerCapture={undefined} dispose={undefined} attach={undefined} onUpdate={undefined} args={undefined} up={undefined} scale={undefined} matrix={undefined} addEventListener={undefined} hasEventListener={undefined} removeEventListener={undefined} dispatchEvent={undefined} onChange={undefined} enabled={undefined} connect={undefined} disconnect={undefined} domElement={undefined} minPolarAngle={undefined} maxPolarAngle={undefined} getDirection={undefined} moveForward={undefined} moveRight={undefined} lock={undefined} unlock={undefined} selector={undefined} onLock={undefined} onUnlock={undefined} />}
       </Canvas>
 
       {/* Display "Press F to play" message when near an arcade machine */}
