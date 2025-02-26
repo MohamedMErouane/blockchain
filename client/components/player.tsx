@@ -1,4 +1,3 @@
-// player.tsx
 "use client";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -89,17 +88,20 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
       camera.rotation.x -= rotation.y * ROTATION_SPEED;
 
       // Check proximity to ALL arcade machines
-      let nearbyArcadeIndex = null;
+      let closestArcadeIndex = null;
+      let closestDistance = Infinity;
+
       for (let i = 0; i < arcadePositions.length; i++) {
-        if (playerRef.current.position.distanceTo(arcadePositions[i]) < ARCADE_RANGE) {
-          nearbyArcadeIndex = i; // Store the index of the nearby arcade
-          break;
+        const distance = playerRef.current.position.distanceTo(arcadePositions[i]);
+        if (distance < ARCADE_RANGE && distance < closestDistance) {
+          closestArcadeIndex = i;
+          closestDistance = distance;
         }
       }
 
       // Update states
-      setNearArcadeIndex(nearbyArcadeIndex); // Which arcade is nearby
-      setNearArcade(nearbyArcadeIndex !== null); // Whether any arcade is nearby
+      setNearArcadeIndex(closestArcadeIndex); // Which arcade is nearby
+      setNearArcade(closestArcadeIndex !== null); // Whether any arcade is nearby
     }
   });
 

@@ -30,6 +30,12 @@ export default function Home() {
   // State to track which arcade machine the player is near
   const [nearArcadeIndex, setNearArcadeIndex] = useState<number | null>(null);
 
+  // Debug state updates
+  useEffect(() => {
+    console.log("Near Arcade:", nearArcade);
+    console.log("Near Arcade Index:", nearArcadeIndex);
+  }, [nearArcade, nearArcadeIndex]);
+
   // Detect if the user is on a mobile device
   useEffect(() => {
     const checkIsMobile = () => {
@@ -138,7 +144,7 @@ export default function Home() {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.code === "KeyF" && nearArcade && nearArcadeIndex !== null) {
         console.log(`Playing Arcade ${nearArcadeIndex + 1}`);
-        // Add your logic here to start the arcade game
+        // Add your logic here to start the arcade game (change scene, start animations)
       }
     };
 
@@ -152,7 +158,7 @@ export default function Home() {
   return (
     <div className="h-screen w-screen" onClick={handleClick}>
       {/* Canvas for 3D scene */}
-      <Canvas shadows camera={{ position: [0, 1.6, 0], fov: 75 }}>
+      <Canvas shadows camera={{ position: [0, 1.6, 0], fov: 75 }} style={{ backgroundColor: "#000" }}>
         <Suspense fallback={null}>
           <ArcadeScene />
           <Player
@@ -170,15 +176,18 @@ export default function Home() {
         <div
           style={{
             position: "absolute",
-            top: "50%",
+            top: "30%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            color: "white",
-            fontSize: "24px",
+            color: "#ff0", // Bright yellow for visibility
+            fontSize: "30px", // Bigger font size for emphasis
+            fontFamily: "Press Start 2P, cursive", // Retro arcade font
             zIndex: 1000,
+            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
+            textAlign: "center",
           }}
         >
-          Press F to play Arcade {nearArcadeIndex + 1}
+          Press <span style={{ color: "#f00" }}>F</span> to play
         </div>
       )}
 
