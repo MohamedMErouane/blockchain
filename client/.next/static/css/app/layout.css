@@ -545,9 +545,6 @@ video {
 [hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
-.visible {
-  visibility: visible;
-}
 .absolute {
   position: absolute;
 }
