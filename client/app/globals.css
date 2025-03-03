@@ -38,3 +38,26 @@ body {
   color: #00e600; /* Arcade Green */
   text-shadow: 0 0 5px #00e600, 0 0 10px #00e600, 0 0 15px #00e600; /* Neon effect */
 }
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px #f00, 0 0 20px #f00;
+  }
+  50% {
+    text-shadow: 0 0 20px #f00, 0 0 30px #f00;
+  }
+  100% {
+    text-shadow: 0 0 10px #f00, 0 0 20px #f00;
+  }
+}

@@ -173,23 +173,34 @@ export default function Home() {
 
       {/* Display "Press F to play" message when near an arcade machine */}
       {nearArcade && nearArcadeIndex !== null && (
-        <div
-          style={{
-            position: "absolute",
-            top: "30%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            color: "#ff0", // Bright yellow for visibility
-            fontSize: "30px", // Bigger font size for emphasis
-            fontFamily: "Press Start 2P, cursive", // Retro arcade font
-            zIndex: 1000,
-            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
-            textAlign: "center",
-          }}
-        >
-          Press <span style={{ color: "#f00" }}>F</span> to play
-        </div>
-      )}
+  <div
+    style={{
+      position: "absolute",
+      top: "30%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      color: "#ff0", // Bright yellow for visibility
+      fontSize: "70px", // Bigger font size for emphasis
+      fontFamily: "Press Start 2P, cursive", // Retro arcade font
+      zIndex: 1000,
+      textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
+      textAlign: "center",
+      animation: "pulse 1.5s infinite", // Add a pulsing animation
+    }}
+  >
+    Press{" "}
+    <span
+      style={{
+        color: "#f00", // Red color for the "F" key
+        textShadow: "0 0 10px #f00, 0 0 20px #f00", // Glowing effect for the "F" key
+        animation: "glow 1.5s infinite", // Add a glowing animation
+      }}
+    >
+      F
+    </span>{" "}
+    to play
+  </div>
+)}
 
       {/* Joysticks for mobile devices */}
       {isMobile && (

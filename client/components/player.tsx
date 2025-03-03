@@ -196,8 +196,7 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
     <>
       <mesh ref={playerRef} position={[2, 1.3, 3]}>
         <boxGeometry args={[0.5, 1.5, 0.5]} />
-        <meshStandardMaterial color="green" />
-      </mesh>
+        <meshStandardMaterial color="green" transparent opacity={0} />      </mesh>
     </>
   );
 }
