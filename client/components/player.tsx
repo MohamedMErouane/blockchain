@@ -9,6 +9,12 @@ const SPEED = 0.03; // Movement speed
 const ROTATION_SPEED = 0.02; // Rotation speed
 const ROOM_BOUNDS = new Box3(new Vector3(-10, 0, -10), new Vector3(10, 5, 10)); // Room bounds
 const ARCADE_RANGE = 2;
+const arcadeGames = [
+  "/games/suiman/pacman.html",         // Arcade 1
+  "/games/spaceinvaders/space-invaders.html", // Arcade 2
+  "/games/asteroids.html"       // Arcade 3
+];
+
 
 interface MoveState {
   forward: number;
@@ -70,14 +76,12 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === "f" && !isPlayingArcade) {
-        // Save the original camera position and rotation
         originalCameraPosition.current.copy(camera.position);
         originalCameraRotation.current.copy(camera.rotation);
-  
-        // Find the nearest arcade machine
+      
         let closestArcadeIndex = null;
-        let closestDistance = Infinity;
-  
+        let closestDistance =   Infinity;
+      
         if (playerRef.current) {
           for (let i = 0; i < arcadePositions.length; i++) {
             const distance = playerRef.current.position.distanceTo(arcadePositions[i]);
@@ -87,40 +91,54 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
             }
           }
         }
-  
+      
         if (closestArcadeIndex !== null) {
-          // Set the target position and rotation for the camera
           const arcadePosition = arcadePositions[closestArcadeIndex];
           const targetPosition = new Vector3(
-            arcadePosition.x - 1.1, // 1.1 units to the left of the arcade
-            arcadePosition.y + 1.5, // 1.5 units above the arcade
-            arcadePosition.z + 0.7  // 0.7 units in front of the arcade
+            arcadePosition.x - 1.1, 
+            arcadePosition.y + 1.4, 
+            arcadePosition.z + 0.3  
           );
-          const targetRotation = new Vector3(
-            -0.38, // Look down more (approximately 22 degrees)
-            0,     // No yaw
-            0      // No roll
-          );
-  
-          // Animate the camera to the target position and rotation
+      
           api.start({
             camPosition: [targetPosition.x, targetPosition.y, targetPosition.z],
-            camRotation: [targetRotation.x, targetRotation.y, targetRotation.z],
+            camRotation: [-0.2, 0, 0],
           });
-  
+      
+          // Load the game
+          const gameUrl = arcadeGames[closestArcadeIndex] || "/games/pacman.html";
+          const arcadeScreen = document.createElement("iframe");
+          arcadeScreen.src = gameUrl;
+          arcadeScreen.style.position = "absolute";
+          arcadeScreen.style.top = "56%";
+          arcadeScreen.style.left = "48.8%";
+          arcadeScreen.style.width = "560px";
+          arcadeScreen.style.height = "360px";
+          arcadeScreen.style.transform = "translate(-50%, -50%)";
+          arcadeScreen.style.borderRadius = "12px"; // Adds rounded corners
+          arcadeScreen.style.border = "none";
+          
+          arcadeScreen.id = "arcade-game"; 
+          document.body.appendChild(arcadeScreen);
+      
           setIsPlayingArcade(true);
         }
       }
+      
   
       if (event.key.toLowerCase() === "x" && isPlayingArcade) {
-        console.log("Exiting focus mode"); // Debug log
-        
-        // Animate the camera back to the original position and rotation smoothly
+        console.log("Exiting focus mode");
+      
         api.start({
           camPosition: [originalCameraPosition.current.x, originalCameraPosition.current.y, originalCameraPosition.current.z],
           camRotation: [originalCameraRotation.current.x, originalCameraRotation.current.y, originalCameraRotation.current.z],
         });
-  
+      
+        const arcadeScreen = document.getElementById("arcade-game");
+        if (arcadeScreen) {
+          arcadeScreen.remove(); // Remove the iframe
+        }
+      
         setIsPlayingArcade(false);
       }
     };
@@ -197,6 +215,6 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
       <mesh ref={playerRef} position={[2, 1.3, 3]}>
         <boxGeometry args={[0.5, 1.5, 0.5]} />
         <meshStandardMaterial color="green" transparent opacity={0} />      </mesh>
-    </>
-  );
+    </>
+  );
 }
