@@ -45,6 +45,8 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
   const originalCameraPosition = useRef(new Vector3());
   const originalCameraRotation = useRef(new Vector3());
 
+  
+
   // Spring animations for camera
   const [{ camPosition, camRotation }, api] = useSpring(() => ({
     camPosition: [camera.position.x, camera.position.y, camera.position.z],
@@ -110,18 +112,28 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
           const arcadeScreen = document.createElement("iframe");
           arcadeScreen.src = gameUrl;
           arcadeScreen.style.position = "absolute";
-          arcadeScreen.style.top = "56%";
-          arcadeScreen.style.left = "48.8%";
-          arcadeScreen.style.width = "560px";
-          arcadeScreen.style.height = "360px";
-          arcadeScreen.style.transform = "translate(-50%, -50%)";
+          arcadeScreen.style.top = "56%"; // Center vertically
+          arcadeScreen.style.left = "48.8%"; // Center horizontally
+          arcadeScreen.style.transform = "translate(-50%, -50%)"; // Center the iframe
           arcadeScreen.style.borderRadius = "12px"; // Adds rounded corners
           arcadeScreen.style.border = "none";
-          
-          arcadeScreen.id = "arcade-game"; 
+
+          // Calculate the initial size based on the viewport dimensions
+          const initialViewportWidth = window.innerWidth;
+          const initialViewportHeight = window.innerHeight;
+
+          // Set the iframe dimensions to 36% of the initial viewport width and 49% of the initial viewport height
+          const initialWidth = initialViewportWidth * 0.36; // 36% of viewport width
+          const initialHeight = initialViewportHeight * 0.49; // 49% of viewport height
+
+          // Set the iframe dimensions as fixed pixel values
+          arcadeScreen.style.width = ${initialWidth}px;
+          arcadeScreen.style.height = ${initialHeight}px;
+
+          arcadeScreen.id = "arcade-game";
           document.body.appendChild(arcadeScreen);
-      
-          setIsPlayingArcade(true);
+
+setIsPlayingArcade(true);
         }
       }
       
@@ -215,6 +227,6 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
       <mesh ref={playerRef} position={[2, 1.3, 3]}>
         <boxGeometry args={[0.5, 1.5, 0.5]} />
         <meshStandardMaterial color="green" transparent opacity={0} />      </mesh>
-    </>
-  );
+    </>
+  );
 }
