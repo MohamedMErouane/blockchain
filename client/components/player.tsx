@@ -12,7 +12,7 @@ const ARCADE_RANGE = 2;
 const arcadeGames = [
   "/games/suiman/pacman.html",         // Arcade 1
   "/games/spaceinvaders/space-invaders.html", // Arcade 2
-  "/games/asteroids.html"       // Arcade 3
+  "/games/asteroids/asteroids.html"       // Arcade 3
 ];
 
 
@@ -127,8 +127,9 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
           const initialHeight = initialViewportHeight * 0.49; // 49% of viewport height
 
           // Set the iframe dimensions as fixed pixel values
-          arcadeScreen.style.width = ${initialWidth}px;
-          arcadeScreen.style.height = ${initialHeight}px;
+          arcadeScreen.style.width = `${initialWidth}px`;
+          arcadeScreen.style.height = `${initialHeight}px`;
+
 
           arcadeScreen.id = "arcade-game";
           document.body.appendChild(arcadeScreen);

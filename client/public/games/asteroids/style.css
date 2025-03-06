@@ -1,0 +1,47 @@
+/* Style for Asteroids.js
+ * Copyright (c) 2010 James Socol <me@jamessocol.com>
+ * See LICENSE.txt for license.
+ */
+
+ body {
+    background-color: #000;
+    color: #fff;
+    font-family: "Calibri", "System", monospace;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Responsive game container */
+#gamecontainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Fixed resolution canvas */
+#gameCanvas {
+    width: 640px;  /* Fixed width */
+    height: 480px; /* Fixed height */
+    background: black; /* Optional: Add a background color */
+}
+
+/* Info section */
+#info {
+    width: 640px; /* Match the game width */
+    margin: 20px auto;
+    text-align: center;
+    color: white; /* Ensure text is visible */
+}
+
+h1 {
+    font-size: 18px;
+}
+
+h2 {
+    font-size: 16px;
+}

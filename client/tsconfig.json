@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["three", "@react-three/fiber", "@react-three/drei"],
+    "types": ["three", "@react-three/fiber", "@react-three/drei","jquery"],
     "plugins": [
       {
         "name": "next"

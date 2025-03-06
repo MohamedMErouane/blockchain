@@ -30,6 +30,9 @@ export default function Home() {
   // State to track which arcade machine the player is near
   const [nearArcadeIndex, setNearArcadeIndex] = useState<number | null>(null);
 
+  // State to track if the game is being played
+  const [isPlaying, setIsPlaying] = useState(false);
+
   // Debug state updates
   useEffect(() => {
     console.log("Near Arcade:", nearArcade);
@@ -139,21 +142,39 @@ export default function Home() {
     };
   }, [isMobile]);
 
-  // Handle "Press F to play" interaction
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.code === "KeyF" && nearArcade && nearArcadeIndex !== null) {
-        console.log(`Playing Arcade ${nearArcadeIndex + 1}`);
-        // Add your logic here to start the arcade game (change scene, start animations)
-      }
-    };
+ // Handle "Press F to play" interaction
+useEffect(() => {
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.code === "KeyF" && nearArcade && nearArcadeIndex !== null) {
+      console.log(`Playing Arcade ${nearArcadeIndex + 1}`);
+      setIsPlaying(true);
+      // Add your logic here to start the arcade game (change scene, start animations)
+    }
+  };
 
-    window.addEventListener("keydown", handleKeyPress);
+  window.addEventListener("keydown", handleKeyPress);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [nearArcade, nearArcadeIndex]);
+  return () => {
+    window.removeEventListener("keydown", handleKeyPress);
+  };
+}, [nearArcade, nearArcadeIndex]);
+
+// Handle "Press X to exit" interaction
+useEffect(() => {
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.code === "KeyX" && isPlaying && nearArcadeIndex !== null) {
+      console.log(`Exiting Arcade ${nearArcadeIndex + 1}`);
+      setIsPlaying(false);
+      // Add your logic here to exit the arcade game (reset scene, stop animations)
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyPress);
+
+  return () => {
+    window.removeEventListener("keydown", handleKeyPress);
+  };
+}, [isPlaying, nearArcadeIndex]);
 
   return (
     <div className="h-screen w-screen" onClick={handleClick}>
@@ -172,35 +193,66 @@ export default function Home() {
       </Canvas>
 
       {/* Display "Press F to play" message when near an arcade machine */}
-      {nearArcade && nearArcadeIndex !== null && (
-  <div
-    style={{
-      position: "absolute",
-      top: "30%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      color: "#ff0", // Bright yellow for visibility
-      fontSize: "70px", // Bigger font size for emphasis
-      fontFamily: "Press Start 2P, cursive", // Retro arcade font
-      zIndex: 1000,
-      textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
-      textAlign: "center",
-      animation: "pulse 1.5s infinite", // Add a pulsing animation
-    }}
-  >
-    Press{" "}
-    <span
-      style={{
-        color: "#f00", // Red color for the "F" key
-        textShadow: "0 0 10px #f00, 0 0 20px #f00", // Glowing effect for the "F" key
-        animation: "glow 1.5s infinite", // Add a glowing animation
-      }}
-    >
-      F
-    </span>{" "}
-    to play
-  </div>
-)}
+      {nearArcade && nearArcadeIndex !== null && !isPlaying && (
+        <div
+          style={{
+            position: "absolute",
+            top: "30%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            color: "#ff0", // Bright yellow for visibility
+            fontSize: "70px", // Bigger font size for emphasis
+            fontFamily: "Press Start 2P, cursive", // Retro arcade font
+            zIndex: 1000,
+            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
+            textAlign: "center",
+            animation: "pulse 1.5s infinite", // Add a pulsing animation
+          }}
+        >
+          Press{" "}
+          <span
+            style={{
+              color: "#f00", // Red color for the "F" key
+              textShadow: "0 0 10px #f00, 0 0 20px #f00", // Glowing effect for the "F" key
+              animation: "glow 1.5s infinite", // Add a glowing animation
+            }}
+          >
+            F
+          </span>{" "}
+          to play
+        </div>
+      )}
+
+      {/* Display "Press X to exit" message when playing */}
+      {isPlaying && (
+        <div
+          style={{
+            position: "absolute",
+            top: "30%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            color: "#ff0", // Bright yellow for visibility
+            fontSize: "70px", // Bigger font size for emphasis
+            fontFamily: "Press Start 2P, cursive", // Retro arcade font
+            zIndex: 1000,
+            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
+            textAlign: "center",
+            animation: "pulse 1.5s infinite", // Add a pulsing animation
+          }}
+        >
+          Press{" "}
+          <span
+            style={{
+              color: "#f00", // Red color for the "X" key
+              textShadow: "0 0 10px #f00, 0 0 20px #f00", // Glowing effect for the "X" key
+              animation: "glow 1.5s infinite", // Add a glowing animation
+            }}
+          >
+            X
+          </span>{" "}
+          to exit
+        </div>
+      )}
 
       {/* Joysticks for mobile devices */}
       {isMobile && (
