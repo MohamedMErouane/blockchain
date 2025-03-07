@@ -97,15 +97,15 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
         if (closestArcadeIndex !== null) {
           const arcadePosition = arcadePositions[closestArcadeIndex];
           const targetPosition = new Vector3(
-            arcadePosition.x - 1.1, 
-            arcadePosition.y + 1.4, 
-            arcadePosition.z + 0.3  
+            arcadePosition.x - 1.112, 
+            arcadePosition.y + 1.325, 
+            arcadePosition.z + 0.1  
           );
       
           api.start({
             camPosition: [targetPosition.x, targetPosition.y, targetPosition.z],
-            camRotation: [-0.2, 0, 0],
-          });
+            camRotation: [-0.17, 0, 0],
+          });
       
           // Load the game
           const gameUrl = arcadeGames[closestArcadeIndex] || "/games/pacman.html";
@@ -123,8 +123,8 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
           const initialViewportHeight = window.innerHeight;
 
           // Set the iframe dimensions to 36% of the initial viewport width and 49% of the initial viewport height
-          const initialWidth = initialViewportWidth * 0.36; // 36% of viewport width
-          const initialHeight = initialViewportHeight * 0.49; // 49% of viewport height
+          const initialWidth = initialViewportWidth * 0.592; // 36% of viewport width
+          const initialHeight = initialViewportHeight * 0.78; // 49% of viewport height
 
           // Set the iframe dimensions as fixed pixel values
           arcadeScreen.style.width = `${initialWidth}px`;

@@ -228,16 +228,15 @@ useEffect(() => {
         <div
           style={{
             position: "absolute",
-            top: "30%",
+            top: "10%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             color: "#ff0", // Bright yellow for visibility
-            fontSize: "70px", // Bigger font size for emphasis
+            fontSize: "40px", // Bigger font size for emphasis
             fontFamily: "Press Start 2P, cursive", // Retro arcade font
             zIndex: 1000,
             textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
-            textAlign: "center",
-            animation: "pulse 1.5s infinite", // Add a pulsing animation
+            textAlign: "center"
           }}
         >
           Press{" "}
