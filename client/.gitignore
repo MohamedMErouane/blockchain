@@ -20,7 +20,7 @@ client/node_modules/@next/swc-linux-x64-gnu/next-swc.linux-x64-gnu.node
 /coverage
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
