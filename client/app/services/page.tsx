@@ -12,25 +12,12 @@ const Joystick = dynamic(() => import("react-joystick-component").then((mod) => 
 });
 
 export default function Home() {
-  // State for pointer lock controls
   const [isLocked, setIsLocked] = useState(false);
-
-  // State to detect if the user is on a mobile device
   const [isMobile, setIsMobile] = useState(false);
-
-  // State for player movement (forward, backward, left, right)
   const [move, setMove] = useState({ forward: 0, backward: 0, left: 0, right: 0 });
-
-  // State for player rotation (x, y)
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
-
-  // State to track if the player is near an arcade machine
   const [nearArcade, setNearArcade] = useState(false);
-
-  // State to track which arcade machine the player is near
   const [nearArcadeIndex, setNearArcadeIndex] = useState<number | null>(null);
-
-  // State to track if the game is being played
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Debug state updates
@@ -142,39 +129,53 @@ export default function Home() {
     };
   }, [isMobile]);
 
- // Handle "Press F to play" interaction
-useEffect(() => {
-  const handleKeyPress = (event: KeyboardEvent) => {
-    if (event.code === "KeyF" && nearArcade && nearArcadeIndex !== null) {
-      console.log(`Playing Arcade ${nearArcadeIndex + 1}`);
+  // Handle "Press F to play" interaction
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "KeyF" && nearArcade && nearArcadeIndex !== null) {
+        console.log(`Playing Arcade ${nearArcadeIndex + 1}`);
+        setIsPlaying(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [nearArcade, nearArcadeIndex]);
+
+  // Handle "Press X to exit" interaction
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "KeyX" && isPlaying && nearArcadeIndex !== null) {
+        console.log(`Exiting Arcade ${nearArcadeIndex + 1}`);
+        setIsPlaying(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isPlaying, nearArcadeIndex]);
+
+  // Handle mobile play button click
+  const handlePlayButtonClick = () => {
+    if (nearArcade && nearArcadeIndex !== null && !isPlaying) {
+      (window as any).startArcadeGame();
       setIsPlaying(true);
-      // Add your logic here to start the arcade game (change scene, start animations)
     }
   };
 
-  window.addEventListener("keydown", handleKeyPress);
-
-  return () => {
-    window.removeEventListener("keydown", handleKeyPress);
-  };
-}, [nearArcade, nearArcadeIndex]);
-
-// Handle "Press X to exit" interaction
-useEffect(() => {
-  const handleKeyPress = (event: KeyboardEvent) => {
-    if (event.code === "KeyX" && isPlaying && nearArcadeIndex !== null) {
-      console.log(`Exiting Arcade ${nearArcadeIndex + 1}`);
+  // Handle mobile exit button click
+  const handleExitButtonClick = () => {
+    if (isPlaying && nearArcadeIndex !== null) {
+      (window as any).stopArcadeGame();
       setIsPlaying(false);
-      // Add your logic here to exit the arcade game (reset scene, stop animations)
     }
   };
-
-  window.addEventListener("keydown", handleKeyPress);
-
-  return () => {
-    window.removeEventListener("keydown", handleKeyPress);
-  };
-}, [isPlaying, nearArcadeIndex]);
 
   return (
     <div className="h-screen w-screen" onClick={handleClick}>
@@ -189,32 +190,32 @@ useEffect(() => {
             setNearArcadeIndex={setNearArcadeIndex}
           />
         </Suspense>
-        {!isMobile && isLocked && <PointerLockControls key={undefined} camera={undefined} layers={undefined} quaternion={undefined} position={undefined} children={undefined} isLocked={undefined} rotation={undefined} onClick={undefined} onPointerMissed={undefined} onContextMenu={undefined} onDoubleClick={undefined} onPointerUp={undefined} onPointerDown={undefined} onPointerOver={undefined} onPointerOut={undefined} onPointerEnter={undefined} onPointerLeave={undefined} onPointerMove={undefined} onPointerCancel={undefined} onWheel={undefined} onLostPointerCapture={undefined} dispose={undefined} attach={undefined} onUpdate={undefined} args={undefined} up={undefined} scale={undefined} matrix={undefined} addEventListener={undefined} hasEventListener={undefined} removeEventListener={undefined} dispatchEvent={undefined} onChange={undefined} enabled={undefined} connect={undefined} disconnect={undefined} domElement={undefined} minPolarAngle={undefined} maxPolarAngle={undefined} getDirection={undefined} moveForward={undefined} moveRight={undefined} lock={undefined} unlock={undefined} selector={undefined} onLock={undefined} onUnlock={undefined} />}
+        {!isMobile && isLocked && <PointerLockControls key={undefined} camera={undefined} layers={undefined} quaternion={undefined} position={undefined} children={undefined} onClick={undefined} isLocked={undefined} rotation={undefined} onPointerMissed={undefined} onContextMenu={undefined} onDoubleClick={undefined} onPointerUp={undefined} onPointerDown={undefined} onPointerOver={undefined} onPointerOut={undefined} onPointerEnter={undefined} onPointerLeave={undefined} onPointerMove={undefined} onPointerCancel={undefined} onWheel={undefined} onLostPointerCapture={undefined} dispose={undefined} attach={undefined} onUpdate={undefined} args={undefined} up={undefined} scale={undefined} matrix={undefined} addEventListener={undefined} hasEventListener={undefined} removeEventListener={undefined} dispatchEvent={undefined} onChange={undefined} enabled={undefined} connect={undefined} disconnect={undefined} domElement={undefined} minPolarAngle={undefined} maxPolarAngle={undefined} getDirection={undefined} moveForward={undefined} moveRight={undefined} lock={undefined} unlock={undefined} selector={undefined} onLock={undefined} onUnlock={undefined} />}
       </Canvas>
 
-      {/* Display "Press F to play" message when near an arcade machine */}
-      {nearArcade && nearArcadeIndex !== null && !isPlaying && (
+      {/* Display "Press F to play" message for desktop users */}
+      {!isMobile && nearArcade && nearArcadeIndex !== null && !isPlaying && (
         <div
           style={{
             position: "absolute",
             top: "30%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            color: "#ff0", // Bright yellow for visibility
-            fontSize: "70px", // Bigger font size for emphasis
-            fontFamily: "Press Start 2P, cursive", // Retro arcade font
+            color: "#ff0",
+            fontSize: "70px",
+            fontFamily: "Press Start 2P, cursive",
             zIndex: 1000,
-            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
+            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
             textAlign: "center",
-            animation: "pulse 1.5s infinite", // Add a pulsing animation
+            animation: "pulse 1.5s infinite",
           }}
         >
           Press{" "}
           <span
             style={{
-              color: "#f00", // Red color for the "F" key
-              textShadow: "0 0 10px #f00, 0 0 20px #f00", // Glowing effect for the "F" key
-              animation: "glow 1.5s infinite", // Add a glowing animation
+              color: "#f00",
+              textShadow: "0 0 10px #f00, 0 0 20px #f00",
+              animation: "glow 1.5s infinite",
             }}
           >
             F
@@ -223,34 +224,80 @@ useEffect(() => {
         </div>
       )}
 
-      {/* Display "Press X to exit" message when playing */}
-      {isPlaying && (
+      {/* Display "Press X to exit" message for desktop users */}
+      {!isMobile && isPlaying && (
         <div
           style={{
             position: "absolute",
             top: "10%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            color: "#ff0", // Bright yellow for visibility
-            fontSize: "40px", // Bigger font size for emphasis
-            fontFamily: "Press Start 2P, cursive", // Retro arcade font
+            color: "#ff0",
+            fontSize: "40px",
+            fontFamily: "Press Start 2P, cursive",
             zIndex: 1000,
-            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)", // Shadow for a cool effect
-            textAlign: "center"
+            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
+            textAlign: "center",
           }}
         >
           Press{" "}
           <span
             style={{
-              color: "#f00", // Red color for the "X" key
-              textShadow: "0 0 10px #f00, 0 0 20px #f00", // Glowing effect for the "X" key
-              animation: "glow 1.5s infinite", // Add a glowing animation
+              color: "#f00",
+              textShadow: "0 0 10px #f00, 0 0 20px #f00",
+              animation: "glow 1.5s infinite",
             }}
           >
             X
           </span>{" "}
           to exit
         </div>
+      )}
+
+      {/* Mobile Play Button */}
+      {isMobile && nearArcade && nearArcadeIndex !== null && !isPlaying && (
+        <button
+          style={{
+            position: "absolute",
+            bottom: "120px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            fontSize: "24px",
+            fontFamily: "Press Start 2P, cursive",
+            color: "#ff0",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            border: "2px solid #ff0",
+            borderRadius: "10px",
+            zIndex: 1000,
+          }}
+          onClick={handlePlayButtonClick}
+        >
+          Play Arcade
+        </button>
+      )}
+
+      {/* Mobile Exit Button */}
+      {isMobile && isPlaying && (
+        <button
+          style={{
+            position: "absolute",
+            bottom: "330px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            fontSize: "15px",
+            fontFamily: "Press Start 2P, cursive",
+            color: "#ff0",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            border: "1px solid #ff0",
+            borderRadius: "10px",
+            zIndex: 1000,
+          }}
+          onClick={handleExitButtonClick}
+        >
+          Exit 
+        </button>
       )}
 
       {/* Joysticks for mobile devices */}

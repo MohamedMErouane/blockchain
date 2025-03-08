@@ -12,9 +12,8 @@ const ARCADE_RANGE = 2;
 const arcadeGames = [
   "/games/suiman/pacman.html",         // Arcade 1
   "/games/spaceinvaders/space-invaders.html", // Arcade 2
-  "/games/asteroids/asteroids.html"       // Arcade 3
+  "/games/asteroids/asteroids.html"       // Arcade 3
 ];
-
 
 interface MoveState {
   forward: number;
@@ -44,8 +43,6 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
   // Store the original camera position and rotation
   const originalCameraPosition = useRef(new Vector3());
   const originalCameraRotation = useRef(new Vector3());
-
-  
 
   // Spring animations for camera
   const [{ camPosition, camRotation }, api] = useSpring(() => ({
@@ -78,91 +75,89 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === "f" && !isPlayingArcade) {
-        originalCameraPosition.current.copy(camera.position);
-        originalCameraRotation.current.copy(camera.rotation);
-      
-        let closestArcadeIndex = null;
-        let closestDistance =   Infinity;
-      
-        if (playerRef.current) {
-          for (let i = 0; i < arcadePositions.length; i++) {
-            const distance = playerRef.current.position.distanceTo(arcadePositions[i]);
-            if (distance < ARCADE_RANGE && distance < closestDistance) {
-              closestArcadeIndex = i;
-              closestDistance = distance;
-            }
-          }
-        }
-      
-        if (closestArcadeIndex !== null) {
-          const arcadePosition = arcadePositions[closestArcadeIndex];
-          const targetPosition = new Vector3(
-            arcadePosition.x - 1.112, 
-            arcadePosition.y + 1.325, 
-            arcadePosition.z + 0.1  
-          );
-      
-          api.start({
-            camPosition: [targetPosition.x, targetPosition.y, targetPosition.z],
-            camRotation: [-0.17, 0, 0],
-          });
-      
-          // Load the game
-          const gameUrl = arcadeGames[closestArcadeIndex] || "/games/pacman.html";
-          const arcadeScreen = document.createElement("iframe");
-          arcadeScreen.src = gameUrl;
-          arcadeScreen.style.position = "absolute";
-          arcadeScreen.style.top = "56%"; // Center vertically
-          arcadeScreen.style.left = "48.8%"; // Center horizontally
-          arcadeScreen.style.transform = "translate(-50%, -50%)"; // Center the iframe
-          arcadeScreen.style.borderRadius = "12px"; // Adds rounded corners
-          arcadeScreen.style.border = "none";
-
-          // Calculate the initial size based on the viewport dimensions
-          const initialViewportWidth = window.innerWidth;
-          const initialViewportHeight = window.innerHeight;
-
-          // Set the iframe dimensions to 36% of the initial viewport width and 49% of the initial viewport height
-          const initialWidth = initialViewportWidth * 0.592; // 36% of viewport width
-          const initialHeight = initialViewportHeight * 0.78; // 49% of viewport height
-
-          // Set the iframe dimensions as fixed pixel values
-          arcadeScreen.style.width = `${initialWidth}px`;
-          arcadeScreen.style.height = `${initialHeight}px`;
-
-
-          arcadeScreen.id = "arcade-game";
-          document.body.appendChild(arcadeScreen);
-
-setIsPlayingArcade(true);
-        }
+        startArcadeGame();
       }
-      
-  
+
       if (event.key.toLowerCase() === "x" && isPlayingArcade) {
-        console.log("Exiting focus mode");
-      
-        api.start({
-          camPosition: [originalCameraPosition.current.x, originalCameraPosition.current.y, originalCameraPosition.current.z],
-          camRotation: [originalCameraRotation.current.x, originalCameraRotation.current.y, originalCameraRotation.current.z],
-        });
-      
-        const arcadeScreen = document.getElementById("arcade-game");
-        if (arcadeScreen) {
-          arcadeScreen.remove(); // Remove the iframe
-        }
-      
-        setIsPlayingArcade(false);
+        stopArcadeGame();
       }
     };
-  
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlayingArcade, camera]); // Remove api from the dependency array
+  }, [isPlayingArcade, camera]);
+
+  // Start arcade game
+  const startArcadeGame = () => {
+    if (!isPlayingArcade && playerRef.current) {
+      let closestArcadeIndex = null;
+      let closestDistance = Infinity;
+
+      for (let i = 0; i < arcadePositions.length; i++) {
+        const distance = playerRef.current.position.distanceTo(arcadePositions[i]);
+        if (distance < ARCADE_RANGE && distance < closestDistance) {
+          closestArcadeIndex = i;
+          closestDistance = distance;
+        }
+      }
+
+      if (closestArcadeIndex !== null) {
+        const arcadePosition = arcadePositions[closestArcadeIndex];
+        const targetPosition = new Vector3(
+          arcadePosition.x - 1.112,
+          arcadePosition.y + 1.325,
+          arcadePosition.z + 0.1
+        );
+
+        api.start({
+          camPosition: [targetPosition.x, targetPosition.y, targetPosition.z],
+          camRotation: [-0.17, 0, 0],
+        });
+
+        const gameUrl = arcadeGames[closestArcadeIndex] || "/games/pacman.html";
+        const arcadeScreen = document.createElement("iframe");
+        arcadeScreen.src = gameUrl;
+        arcadeScreen.style.position = "absolute";
+        arcadeScreen.style.top = "56%";
+        arcadeScreen.style.left = "48.8%";
+        arcadeScreen.style.transform = "translate(-50%, -50%)";
+        arcadeScreen.style.borderRadius = "12px";
+        arcadeScreen.style.border = "none";
+        arcadeScreen.style.width = `${window.innerWidth * 0.592}px`;
+        arcadeScreen.style.height = `${window.innerHeight * 0.78}px`;
+        arcadeScreen.id = "arcade-game";
+        document.body.appendChild(arcadeScreen);
+
+        setIsPlayingArcade(true);
+      }
+    }
+  };
+
+  // Stop arcade game
+  const stopArcadeGame = () => {
+    if (isPlayingArcade) {
+      api.start({
+        camPosition: [originalCameraPosition.current.x, originalCameraPosition.current.y, originalCameraPosition.current.z],
+        camRotation: [originalCameraRotation.current.x, originalCameraRotation.current.y, originalCameraRotation.current.z],
+      });
+
+      const arcadeScreen = document.getElementById("arcade-game");
+      if (arcadeScreen) {
+        arcadeScreen.remove();
+      }
+
+      setIsPlayingArcade(false);
+    }
+  };
+
+  // Expose functions to the parent component
+  useEffect(() => {
+    (window as any).startArcadeGame = startArcadeGame;
+    (window as any).stopArcadeGame = stopArcadeGame;
+  }, [isPlayingArcade]);
 
   // Update camera position and rotation using spring values
   useFrame(() => {
-    // Update camera position and rotation only when in focus mode
     if (isPlayingArcade) {
       camera.position.set(camPosition.get()[0], camPosition.get()[1], camPosition.get()[2]);
       camera.rotation.set(camRotation.get()[0], camRotation.get()[1], camRotation.get()[2]);
@@ -227,7 +222,8 @@ setIsPlayingArcade(true);
     <>
       <mesh ref={playerRef} position={[2, 1.3, 3]}>
         <boxGeometry args={[0.5, 1.5, 0.5]} />
-        <meshStandardMaterial color="green" transparent opacity={0} />      </mesh>
+        <meshStandardMaterial color="green" transparent opacity={0} />
+      </mesh>
     </>
   );
 }
