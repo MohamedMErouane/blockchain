@@ -413,39 +413,109 @@ Asteroids.keyState = function(_) {
     }
 }
 
-Asteroids.listen = function(game) {
+Asteroids.listen = function (game) {
     const keyMap = {
-        "ArrowLeft": Asteroids.LEFT,
-        "KeyA": Asteroids.LEFT,
-        "ArrowRight": Asteroids.RIGHT,
-        "KeyD": Asteroids.RIGHT,
-        "ArrowUp": Asteroids.UP,
-        "KeyW": Asteroids.UP,
-        "Space": Asteroids.FIRE
+      ArrowLeft: Asteroids.LEFT,
+      KeyA: Asteroids.LEFT,
+      ArrowRight: Asteroids.RIGHT,
+      KeyD: Asteroids.RIGHT,
+      ArrowUp: Asteroids.UP,
+      KeyW: Asteroids.UP,
+      Space: Asteroids.FIRE,
     };
-
-    window.addEventListener('keydown', function(e) {
-        const state = keyMap[e.code];
-        if (state) {
-            e.preventDefault();
-            e.stopPropagation();
-            game.keyState.on(state);
-            return false;
+  
+    // Keyboard event listeners
+    window.addEventListener("keydown", function (e) {
+      const state = keyMap[e.code];
+      if (state) {
+        e.preventDefault();
+        e.stopPropagation();
+        game.keyState.on(state);
+        return false;
+      }
+      return true;
+    });
+  
+    window.addEventListener("keyup", function (e) {
+      const state = keyMap[e.code];
+      if (state) {
+        e.preventDefault();
+        e.stopPropagation();
+        game.keyState.off(state);
+        return false;
+      }
+      return true;
+    });
+  
+    // Touch event listeners for mobile
+    if ("ontouchstart" in window) {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let isShooting = false;
+  
+      // Handle touch start
+      window.addEventListener("touchstart", function (e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+  
+        // Handle shooting on touch start
+        if (!isShooting) {
+          game.keyState.on(Asteroids.FIRE); // Simulate Space key for shooting
+          isShooting = true;
         }
-        return true;
-    }, true);
-
-    window.addEventListener('keyup', function(e) {
-        const state = keyMap[e.code];
-        if (state) {
-            e.preventDefault();
-            e.stopPropagation();
-            game.keyState.off(state);
-            return false;
+      });
+  
+      // Handle touch move
+      window.addEventListener("touchmove", function (e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+  
+        // Map touch movement to key states
+        if (deltaY < -10) {
+          game.keyState.on(Asteroids.UP); // Forward (W)
+        } else {
+          game.keyState.off(Asteroids.UP);
         }
-        return true;
-    }, true);
-}
+  
+        if (deltaY > 10) {
+          game.keyState.on(Asteroids.DOWN); // Backward (S)
+        } else {
+          game.keyState.off(Asteroids.DOWN);
+        }
+  
+        if (deltaX < -10) {
+          game.keyState.on(Asteroids.LEFT); // Left (A)
+        } else {
+          game.keyState.off(Asteroids.LEFT);
+        }
+  
+        if (deltaX > 10) {
+          game.keyState.on(Asteroids.RIGHT); // Right (D)
+        } else {
+          game.keyState.off(Asteroids.RIGHT);
+        }
+      });
+  
+      // Handle touch end
+      window.addEventListener("touchend", function (e) {
+        e.preventDefault();
+        game.keyState.off(Asteroids.UP);
+        game.keyState.off(Asteroids.DOWN);
+        game.keyState.off(Asteroids.LEFT);
+        game.keyState.off(Asteroids.RIGHT);
+  
+        // Handle shooting on touch end
+        if (isShooting) {
+          game.keyState.off(Asteroids.FIRE);
+          isShooting = false;
+        }
+      });
+    }
+  };
 
 Asteroids.asteroid = function (game, _gen) {
     // implements IScreenObject

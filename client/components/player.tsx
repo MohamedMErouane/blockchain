@@ -5,6 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Vector3, Box3, Raycaster, Mesh } from "three";
 import { arcadePositions } from "../components/arcadeposition"; // Adjust the path accordingly
 
+
 const SPEED = 0.03; // Movement speed
 const ROTATION_SPEED = 0.02; // Rotation speed
 const ROOM_BOUNDS = new Box3(new Vector3(-10, 0, -10), new Vector3(10, 5, 10)); // Room bounds
@@ -217,6 +218,7 @@ export default function Player({ move, rotation, setNearArcade, setNearArcadeInd
     setNearArcadeIndex(closestArcadeIndex); // Which arcade is nearby
     setNearArcade(closestArcadeIndex !== null); // Whether any arcade is nearby
   });
+  
 
   return (
     <>

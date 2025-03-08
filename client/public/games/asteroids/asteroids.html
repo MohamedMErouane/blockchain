@@ -27,8 +27,9 @@
 
         /* Fixed resolution canvas */
         #gameCanvas {
-            width: 640px;  /* Fixed width */
-            height: 480px; /* Fixed height */
+            width: 100%;
+            height: 100%;
+            touch-action: none; /* Disable default touch behaviors like scrolling */
             background: black; /* Optional: Add a background color */
         }
 
@@ -39,11 +40,23 @@
             text-align: center;
             color: white; /* Ensure text is visible */
         }
+
+        /* Mobile overlay for shooting */
+        .mobile-shoot-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            background: transparent;
+        }
     </style>
 </head>
 <body>
     <div id="gamecontainer">
         <canvas id="gameCanvas" width="640" height="480"></canvas>
+        <div class="mobile-shoot-overlay"></div>
     </div>
     <div id="info">
         <p>Use arrow keys to move and spacebar to shoot. Destroy all asteroids to advance to the next level!</p>
@@ -74,6 +87,73 @@
             var keycode = e.which || window.event.keycode;
             game.keyState.off(keycode);
         });
+
+        // Touch event listeners for mobile
+        if ("ontouchstart" in window) {
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            // Handle touch start
+            window.addEventListener("touchstart", function (e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+            });
+
+            // Handle touch move
+            window.addEventListener("touchmove", function (e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - touchStartX;
+                const deltaY = touch.clientY - touchStartY;
+
+                // Map touch movement to key states
+                if (deltaY < -10) {
+                    game.keyState.on(Asteroids.UP); // Forward (W)
+                } else {
+                    game.keyState.off(Asteroids.UP);
+                }
+
+                if (deltaY > 10) {
+                    game.keyState.on(Asteroids.DOWN); // Backward (S)
+                } else {
+                    game.keyState.off(Asteroids.DOWN);
+                }
+
+                if (deltaX < -10) {
+                    game.keyState.on(Asteroids.LEFT); // Left (A)
+                } else {
+                    game.keyState.off(Asteroids.LEFT);
+                }
+
+                if (deltaX > 10) {
+                    game.keyState.on(Asteroids.RIGHT); // Right (D)
+                } else {
+                    game.keyState.off(Asteroids.RIGHT);
+                }
+            });
+
+            // Handle touch end
+            window.addEventListener("touchend", function (e) {
+                e.preventDefault();
+                game.keyState.off(Asteroids.UP);
+                game.keyState.off(Asteroids.DOWN);
+                game.keyState.off(Asteroids.LEFT);
+                game.keyState.off(Asteroids.RIGHT);
+            });
+
+            // Handle touch for shooting
+            window.addEventListener("touchstart", function (e) {
+                e.preventDefault();
+                game.keyState.on(Asteroids.FIRE); // Simulate Space key for shooting
+            });
+
+            window.addEventListener("touchend", function (e) {
+                e.preventDefault();
+                game.keyState.off(Asteroids.FIRE);
+            });
+        }
 
         function toggleMute() {
             game.mute();

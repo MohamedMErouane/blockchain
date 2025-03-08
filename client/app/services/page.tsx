@@ -26,6 +26,8 @@ export default function Home() {
     console.log("Near Arcade Index:", nearArcadeIndex);
   }, [nearArcade, nearArcadeIndex]);
 
+
+  
   // Detect if the user is on a mobile device
   useEffect(() => {
     const checkIsMobile = () => {
@@ -177,6 +179,8 @@ export default function Home() {
     }
   };
 
+
+  
   return (
     <div className="h-screen w-screen" onClick={handleClick}>
       {/* Canvas for 3D scene */}
@@ -227,31 +231,40 @@ export default function Home() {
       {/* Display "Press X to exit" message for desktop users */}
       {!isMobile && isPlaying && (
         <div
+        style={{
+          position: "absolute",
+          top: "10%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          color: "#ff0",
+          fontSize: "40px",
+          fontFamily: "Press Start 2P, cursive",
+          zIndex: 1000,
+          textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
+          textAlign: "center",
+        }}
+      >
+        Press{" "}
+        <span
           style={{
-            position: "absolute",
-            top: "10%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            color: "#ff0",
-            fontSize: "40px",
-            fontFamily: "Press Start 2P, cursive",
-            zIndex: 1000,
-            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
-            textAlign: "center",
+            color: "#f00",
+            textShadow: "0 0 10px #f00, 0 0 20px #f00",
+            animation: "glow 1.5s infinite",
           }}
         >
-          Press{" "}
-          <span
-            style={{
-              color: "#f00",
-              textShadow: "0 0 10px #f00, 0 0 20px #f00",
-              animation: "glow 1.5s infinite",
-            }}
-          >
-            X
-          </span>{" "}
-          to exit
-        </div>
+          X
+        </span>{" "}
+        to exit
+        <br />
+        <span
+          style={{
+            
+            fontSize: "20px", // Smaller font size
+          }}
+        >
+          press escape or in screen again to use cursor or navigate
+        </span>
+      </div>
       )}
 
       {/* Mobile Play Button */}

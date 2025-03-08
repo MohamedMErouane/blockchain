@@ -3,6 +3,16 @@
  * See LICENSE.txt for license.
  */
 
+ /* Add this to your style.css */
+.mobile-shoot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: transparent;
+}
  body {
     background-color: #000;
     color: #fff;
@@ -12,6 +22,24 @@
     padding: 0;
     overflow: hidden;
 }
+
+/* Add this to your style.css */
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    touch-action: none; /* Disable default touch behaviors like scrolling */
+  }
+  
+  /* Mobile overlay for shooting */
+  .mobile-shoot-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    background: transparent;
+  }
 
 /* Responsive game container */
 #gamecontainer {
